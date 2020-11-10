@@ -140,6 +140,8 @@ function serializeQuery(obj, prefix) {
     p;
   for (p in obj) {
     if (obj.hasOwnProperty(p)) {
+      if (obj[p] === null || obj[p].length === 0) continue
+
       var k = prefix ? prefix + "[" + p + "]" : p,
         v = obj[p];
       str.push((v !== null && typeof v === "object") ?
