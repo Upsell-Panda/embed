@@ -1,0 +1,5 @@
+# Ignore the intermediary build files, but keep the directory
+build/*
+!build/.keep
+
+node_modules/

@@ -1,0 +1,55 @@
+.__promotions_container {
+  background-color: rgb(245, 245, 245);
+  height: 2rem;
+  position: fixed;
+  text-align: center;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.__shown {
+  animation: fadeIn 900ms;
+  opacity: 1;
+}
+
+.__promotion {
+  transition: opacity 900ms;
+}
+
+.__promotion_content_wrapper {
+  width: 100%;
+  height: 100%;
+  padding: 4px 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.__promotion_content {
+  text-align: center;
+}
+
+header {
+  margin-top: 2rem !important;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: .25;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .__promotions_container {
+    height: 4rem;
+  }
+
+  header {
+    margin-top: 4rem !important;
+  }
+}
