@@ -48,19 +48,21 @@ function generatePromotionContent(promotion) {
   </div>`;
 }
 
-function renderPromotionInContainer(promotion) {
+function renderPromotionInContainer(promotion, fadeIn) {
   var bannerContainer = document.getElementsByClassName('__promotions_container')[0];
 
   var promotionHolder = document.createElement('span');
   promotionHolder.innerHTML = generatePromotionContent(promotion);
-  promotionHolder.classList = '__shown __promotion';
+  bannerContainer.classList = `__promotions_container ${fadeIn ? '__fade_in' : ''}`;
   bannerContainer.innerHTML = '';
   bannerContainer.appendChild(promotionHolder);
 }
 
 let intervalTracker = 0;
 let intervalID = null;
-function turnOnCountdown(promotion) {
+function insertAndAnimatePromotion(promotion, fadeIn) {
+  renderPromotionInContainer(promotion, fadeIn);
+
   intervalID = setInterval(function () {
     renderPromotionInContainer(promotion);
 
@@ -108,11 +110,7 @@ window.onload = function() {
     body.insertBefore(bannerContainer, body.firstChild);
 
     var currentPromotion = promotionsList[0];
-    renderPromotionInContainer(currentPromotion);
-
-    if (currentPromotion.hasCountdown) {
-      turnOnCountdown(currentPromotion);
-    }
+    insertAndAnimatePromotion(currentPromotion, true);
 
     setTimeout(showNextPromo, 5000);
   });
@@ -127,11 +125,8 @@ function showNextPromo() {
   }
 
   var nextPromotion = promotionsList[iterator];
-  renderPromotionInContainer(nextPromotion);
-
-  if (nextPromotion.hasCountdown) {
-    turnOnCountdown(nextPromotion);
-  }
+  var fadeIn = promotionsList.length > 1;
+  insertAndAnimatePromotion(nextPromotion, fadeIn);
 
   setTimeout(showNextPromo, 5000);
 }
