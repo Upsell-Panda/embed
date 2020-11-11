@@ -4,10 +4,10 @@ function countdownTimer(ends) {
   let remaining = 'Promotion is expired!';
   if (!ends) { return remaining; }
 
-  const difference = ends - +new Date();
+  var difference = ends - +new Date();
 
   if (difference > 0) {
-    const parts = {
+    var parts = {
       days: Math.floor(difference / (1000 * 60 * 60 * 24)),
       hr: Math.floor((difference / (1000 * 60 * 60)) % 24),
       min: Math.floor((difference / 1000 / 60) % 60),
@@ -22,24 +22,24 @@ function countdownTimer(ends) {
 }
 
 function generatePromotionContent(promotion) {
-  const ends = promotion.ends;
-  const content = promotion.content;
-  const hasCountdown = promotion.hasCountdown;
-  const countdownTextColour = promotion.countdownTextColour;
+  var ends = promotion.ends;
+  var content = promotion.content;
+  var hasCountdown = promotion.hasCountdown;
+  var countdownTextColour = promotion.countdownTextColour;
 
   if (!hasCountdown) { return promotion.content; }
 
-  const combinerObject = document.createElement('div');
+  var combinerObject = document.createElement('div');
   combinerObject.innerHTML = promotion.content;
-  const htmlContent = combinerObject.getElementsByClassName('__promotion_content')[0];
+  var htmlContent = combinerObject.getElementsByClassName('__promotion_content')[0];
 
-  const countdownContent = countdownTimer(new Date(ends));
-  const styledCountdown = `<span style="color:${countdownTextColour};"> ${countdownContent}</span>`;
+  var countdownContent = countdownTimer(new Date(ends));
+  var styledCountdown = `<span style="color:${countdownTextColour};"> ${countdownContent}</span>`;
   htmlContent.innerHTML = htmlContent.innerHTML + styledCountdown;
 
-  const contentWrapper = combinerObject.getElementsByClassName('__promotion_content_wrapper')[0];
-  const promotionContent = `<div class="__promotion_content">${htmlContent.innerHTML}</div>`;
-  const backgroundColour = contentWrapper.style.backgroundColor;
+  var contentWrapper = combinerObject.getElementsByClassName('__promotion_content_wrapper')[0];
+  var promotionContent = `<div class="__promotion_content">${htmlContent.innerHTML}</div>`;
+  var backgroundColour = contentWrapper.style.backgroundColor;
   return `<div
     class="__promotion_content_wrapper"
     style="background-color:${backgroundColour}"
@@ -48,19 +48,21 @@ function generatePromotionContent(promotion) {
   </div>`;
 }
 
-function renderPromotionInContainer(promotion) {
-  const bannerContainer = document.getElementsByClassName('__promotions_container')[0];
+function renderPromotionInContainer(promotion, fadeIn) {
+  var bannerContainer = document.getElementsByClassName('__promotions_container')[0];
 
-  const promotionHolder = document.createElement('span');
+  var promotionHolder = document.createElement('span');
   promotionHolder.innerHTML = generatePromotionContent(promotion);
-  promotionHolder.classList = '__shown __promotion';
+  bannerContainer.classList = `__promotions_container ${fadeIn ? '__fade_in' : ''}`;
   bannerContainer.innerHTML = '';
   bannerContainer.appendChild(promotionHolder);
 }
 
 let intervalTracker = 0;
 let intervalID = null;
-function turnOnCountdown(promotion) {
+function insertAndAnimatePromotion(promotion, fadeIn) {
+  renderPromotionInContainer(promotion, fadeIn);
+
   intervalID = setInterval(function () {
     renderPromotionInContainer(promotion);
 
@@ -87,9 +89,10 @@ window.onload = function() {
   var newStylesheet = document.createElement('style');
   newStylesheet.innerHTML = stylesheet;
 
-  const params = serializeQuery(window.__upsell_panda);
+  var params = serializeQuery(window.__upsell_panda);
+  var appUrl = process.env.APP_URL;
 
-  fetch(`https://www.upsellpanda.com/api/student_promotions?${params}`)
+  fetch(`https://${appUrl}/api/student_promotions?${params}`)
   .then((response) => {
     return response.json();
   }).then((data) => {
@@ -101,17 +104,13 @@ window.onload = function() {
 
     document.body.appendChild(newStylesheet);
 
-    const bannerContainer = document.createElement('div');
+    var bannerContainer = document.createElement('div');
     bannerContainer.classList = '__promotions_container';
-    const body = document.body;
+    var body = document.body;
     body.insertBefore(bannerContainer, body.firstChild);
 
-    const currentPromotion = promotionsList[0];
-    renderPromotionInContainer(currentPromotion);
-
-    if (currentPromotion.hasCountdown) {
-      turnOnCountdown(currentPromotion);
-    }
+    var currentPromotion = promotionsList[0];
+    insertAndAnimatePromotion(currentPromotion, true);
 
     setTimeout(showNextPromo, 5000);
   });
@@ -125,12 +124,9 @@ function showNextPromo() {
     iterator++;
   }
 
-  const nextPromotion = promotionsList[iterator];
-  renderPromotionInContainer(nextPromotion);
-
-  if (nextPromotion.hasCountdown) {
-    turnOnCountdown(nextPromotion);
-  }
+  var nextPromotion = promotionsList[iterator];
+  var fadeIn = promotionsList.length > 1;
+  insertAndAnimatePromotion(nextPromotion, fadeIn);
 
   setTimeout(showNextPromo, 5000);
 }
@@ -140,6 +136,8 @@ function serializeQuery(obj, prefix) {
     p;
   for (p in obj) {
     if (obj.hasOwnProperty(p)) {
+      if (obj[p] === null || obj[p].length === 0) continue
+
       var k = prefix ? prefix + "[" + p + "]" : p,
         v = obj[p];
       str.push((v !== null && typeof v === "object") ?
