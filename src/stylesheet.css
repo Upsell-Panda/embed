@@ -8,13 +8,20 @@
   z-index: 1000;
 }
 
-.__shown {
-  animation: fadeIn 900ms;
-  opacity: 1;
+.__fade_in {
+  -webkit-animation: fadein 900ms; /* Safari, Chrome and Opera > 12.1 */
+  animation: fadein 900ms;
 }
 
-.__promotion {
-  transition: opacity 900ms;
+@keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Safari, Chrome and Opera > 12.1 */
+@-webkit-keyframes fadein {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .__promotion_content_wrapper {
