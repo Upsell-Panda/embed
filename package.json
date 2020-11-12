@@ -3,7 +3,7 @@
     "esbuild": "^0.8.5"
   },
   "scripts": {
-    "build": "rm build/* && esbuild src/stylesheet.css --minify --outfile=build/stylesheet.css && cp src/upsell_panda.js build/upsell_panda.js && esbuild build/upsell_panda.js --minify --bundle --outfile=build/upsell_panda.dev.js --loader:.css=text --define:process.env.APP_URL=\"'localhost:3000'\" && esbuild build/upsell_panda.js --minify --bundle --outfile=dist/upsell_panda.min.js --loader:.css=text --define:process.env.APP_URL=\"'www.upsellpanda.com'\"",
+    "build": "rm -f build/* && esbuild src/stylesheet.css --minify --outfile=build/stylesheet.css && cp src/upsell_panda.js build/upsell_panda.js && esbuild build/upsell_panda.js --minify --bundle --outfile=build/upsell_panda.dev.js --loader:.css=text --define:process.env.APP_URL=\"'localhost:3000'\" && esbuild build/upsell_panda.js --minify --bundle --outfile=dist/upsell_panda.min.js --loader:.css=text --define:process.env.APP_URL=\"'www.upsellpanda.com'\" && echo 'Build Complete!'",
     "purge-cdn": "curl https://purge.jsdelivr.net/gh/Upsell-Panda/embed@release/dist/upsell_panda.min.js"
   }
 }
